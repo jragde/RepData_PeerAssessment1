@@ -119,6 +119,70 @@ print(paste("The interval with max steps is Interval number",maxStepInterval$int
 
 ## Imputing missing values
 
+Find the number of missing values  
+
+
+```r
+numMissing <- sum(is.na(data1$steps))
+```
+
+Fill missing data with mean for that interval  
+
+
+```r
+data_cmplt <- data1
+```
+
+Create a list of intervals with and without values  
+
+
+```r
+missingValueList <- is.na(data_cmplt$steps)
+```
+Calculate mean no. of steps for each interval  
+
+
+```r
+intervalAvgs <- tapply(data_cmplt$steps, data_cmplt$interval, mean, na.rm=TRUE, simplify=TRUE)
+```
+
+Now fill the missing values with calculated average value  
+
+
+```r
+data_cmplt$steps[missingValueList] <- intervalAvgs[as.character(data_cmplt$interval[missingValueList])]
+```
+
+
+```r
+#
+# Make sure there are no missing values
+#
+if (sum(is.na(data_cmplt$steps)) > 0){
+  print(paste("There are still missing values."))
+}
+
+#
+# Calculate Total steps for complete data
+#
+
+dailyStepsCmplt <- aggregate(steps ~ date, data_cmplt, sum,na.rm=TRUE)
+
+#
+# Plot histogram steps taken daily
+#
+
+hist(dailyStepsCmplt$steps, 
+     col = "blue",
+     breaks = seq(from = 0, to = 27000, by = 1500),
+     main = "Histogram of Daily Steps", 
+     xlab = "Total Daily Steps",
+     ylab = "Timer per day")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png)
+
+
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
