@@ -263,18 +263,18 @@ intvlTotals <- data_cmplt %>%
   group_by(interval, weektype) %>%
   summarise(steps = mean(steps))
 
+# Interval needs to be numeric to plot
+intvlTotals$interval <- as.numeric(intvlTotals$interval)
+
 ggplot(intvlTotals, aes(x=interval, y=steps, color = weektype)) + 
-  geom_line() + 
+  geom_line(aes(group=weektype)) + 
   facet_wrap(~weektype, nrow=2, ncol=1) +
   labs(x="Interval", y="Number of steps") +
   theme_bw()
 ```
 
-```
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-```
-
 ![](PA1_template_files/figure-html/unnamed-chunk-14-1.png)
+
+Based on the plots, it appears that activity ramps up more slowly on
+weekends, but there is more activity during the day on weekends and
+activity tapers off very rapidly on weekends.
