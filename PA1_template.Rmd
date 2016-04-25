@@ -4,7 +4,13 @@ output:
   html_document:
     keep_md: true
 ---
-
+```{r}
+#
+# Load needed libraries
+#
+library(ggplot2)
+library(dplyr)
+```
 
 ## Loading and preprocessing the data
 
@@ -149,9 +155,49 @@ hist(dailyStepsCmplt$steps,
      main = "Histogram of Daily Steps", 
      xlab = "Total Daily Steps",
      ylab = "Timer per day")
+
+#
+# Calculate total steps taken daily
+#
+
+dailyStepsCmplt <- aggregate(steps ~ date, data_cmplt, sum,na.rm=TRUE)
+
+#
+# Calculate the mean and median steps taken daily for complete data
+#
+meanStepsCmplt <- mean(dailyStepsCmplt$steps,na.rm=T)
+medianStepsCmplt <- median(dailyStepsCmplt$steps,na.rm=T)
+#
+# Print the mean and median daily steps
+#
+print(paste("The Mean number of daily steps is",round(meanStepsCmplt,2)))
+print(paste("The median number of daily steps is", round(medianStepsCmplt,2)))
+
 ```
 
 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r}
+#
+# Calculate day of week and then sort into weekday/weekend
+#
+data_cmplt <- mutate(data_cmplt, weektype = ifelse(weekdays(data_cmplt$date) == "Saturday" | weekdays(data_cmplt$date) == "Sunday", "weekend", "weekday"))
+data_cmplt$weektype <- as.factor(data_cmplt$weektype)
+
+#
+# Now create plots of weekday and weekend steps/interval over entire day
+#
+intvlTotals <- data_cmplt %>%
+  group_by(interval, weektype) %>%
+  summarise(steps = mean(steps))
+
+ggplot(intvlTotals, aes(x=interval, y=steps, color = weektype)) + 
+  geom_line() + 
+  facet_wrap(~weektype, nrow=2, ncol=1) +
+  labs(x="Interval", y="Number of steps") +
+  theme_bw()
+
+```

@@ -1,5 +1,36 @@
 # Reproducible Research: Peer Assessment 1
 
+```r
+#
+# Load needed libraries
+#
+library(ggplot2)
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 3.2.4
+```
+
+```r
+library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
 
 ## Loading and preprocessing the data
 
@@ -99,7 +130,7 @@ plot(perIntervalSteps$interval, perIntervalSteps$steps,
      ylab = "Steps/Interval")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)
 
 Find the interval with the highest number of steps  
 
@@ -180,9 +211,70 @@ hist(dailyStepsCmplt$steps,
      ylab = "Timer per day")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-12-1.png)
+![](PA1_template_files/figure-html/unnamed-chunk-13-1.png)
+
+```r
+#
+# Calculate total steps taken daily
+#
+
+dailyStepsCmplt <- aggregate(steps ~ date, data_cmplt, sum,na.rm=TRUE)
+
+#
+# Calculate the mean and median steps taken daily for complete data
+#
+meanStepsCmplt <- mean(dailyStepsCmplt$steps,na.rm=T)
+medianStepsCmplt <- median(dailyStepsCmplt$steps,na.rm=T)
+#
+# Print the mean and median daily steps
+#
+print(paste("The Mean number of daily steps is",round(meanStepsCmplt,2)))
+```
+
+```
+## [1] "The Mean number of daily steps is 10766.19"
+```
+
+```r
+print(paste("The median number of daily steps is", round(medianStepsCmplt,2)))
+```
+
+```
+## [1] "The median number of daily steps is 10766.19"
+```
 
 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+
+```r
+#
+# Calculate day of week and then sort into weekday/weekend
+#
+data_cmplt <- mutate(data_cmplt, weektype = ifelse(weekdays(data_cmplt$date) == "Saturday" | weekdays(data_cmplt$date) == "Sunday", "weekend", "weekday"))
+data_cmplt$weektype <- as.factor(data_cmplt$weektype)
+
+#
+# Now create plots of weekday and weekend steps/interval over entire day
+#
+intvlTotals <- data_cmplt %>%
+  group_by(interval, weektype) %>%
+  summarise(steps = mean(steps))
+
+ggplot(intvlTotals, aes(x=interval, y=steps, color = weektype)) + 
+  geom_line() + 
+  facet_wrap(~weektype, nrow=2, ncol=1) +
+  labs(x="Interval", y="Number of steps") +
+  theme_bw()
+```
+
+```
+## geom_path: Each group consists of only one observation. Do you need to
+## adjust the group aesthetic?
+## geom_path: Each group consists of only one observation. Do you need to
+## adjust the group aesthetic?
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-14-1.png)
