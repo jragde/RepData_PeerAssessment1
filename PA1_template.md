@@ -248,6 +248,9 @@ print(paste("The median number of daily steps is", round(medianStepsCmplt,2)))
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
+Add a column to indicate weekdays and weekend (Saturday & Sunday).
+This can then be used to plot the data separately.
+
 
 ```r
 #
