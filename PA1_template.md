@@ -1,16 +1,12 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
 
 1. Load the data  
 
-```{r loaddata}
+
+```r
 if (!file.exists("activity.csv")){
   unzip(zipfile="activity.zip")
 }  
@@ -19,7 +15,8 @@ data1 <- read.csv("activity.csv", sep = ",", colClasses = c("numeric", "Date", "
 
 2. Process/Transform the data
 
-```{r processData}
+
+```r
 data1$interval <- as.factor(data1$interval)
 ```
 
