@@ -42,6 +42,20 @@ hist(dailySteps$steps,
 
 ```
 
+Calculate the mean and median steps taken daily  
+
+```{r}
+meanSteps <- mean(dailySteps$steps,na.rm=T)
+medianSteps <- median(dailySteps$steps,na.rm=T)
+```
+
+Print the mean and median daily steps  
+
+```{r}
+print(paste("The Mean number of daily steps is",round(meanSteps,2)))
+print(paste("The median number of daily steps is", round(medianSteps,2)))
+```
+
 ## What is the average daily activity pattern?
 
 
